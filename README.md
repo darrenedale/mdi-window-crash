@@ -12,13 +12,22 @@ The simple example program in this repository triggers this crash.
 To reproduce the problem:
 
 1. Make sure you are using Qt development tools from Qt 5.9.1 in Kubuntu
-2. clone this repository and cd into the directory where you cloned it
-3. mkdir build && cd build
-4. qmake ../QMdiMainWindowCrash.pro
-5. make
-6. You should have built an executable QMdiMainWindowCrash. Run it.
+2. make sure that you are using KDE Plasma desktop
+3. make sure you have the **Global Menu** widget visible somewhere
+3. make sure that you have **System Settings > Widget Style > Fine Tuning > Menubar style** set to
+   **Application Menu widget**
+2. clone this repository and `cd` into the directory where you cloned it
+3. `mkdir build && cd build`
+4. `qmake ../QMdiMainWindowCrash.pro`
+   or
+   `cmake ../`
+5. `make`
+6. You should have built an executable **QMdiMainWindowCrash**. Run it.
 7. Click the toolbar button to add a QMainWindow sub-window to the MDI area.
 8. Observe the segfault.
 
-Unless this program is doing something wrong, I think a bug report needs to be filed but I'm unclear
-if that bug report needs to go to Qt or to the Kubuntu Qt5 package maintainers. Advice appreciated.
+I think the issue is in KDEPlasmaPlatformTheme.so when Plasma desktop is configured to use the global
+menu widget. Adding the MDI sub-window, which has a menu bar, makes some calls into
+KDEPlasmaPlatformTheme.so via QMenu. My guess is that the presence of both an application menu and a
+MDI sub-window menu is causing some kind of clash that the Global Menu widget can't resolve. That's
+just a guess, though.
